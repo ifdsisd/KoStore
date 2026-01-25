@@ -36,14 +36,17 @@ koreader_store/
 
 ## Installation
 
-1. Install dependencies:
+1. Click on Code then download zip
+2. Extract the zip and open it(until you see a lot of folders and files)
+3. Right click and press open a terminal here
+
+4. Install dependencies:
    ```bash
    pip install PyQt6 requests markdown
    ```
 
-2. Run the application:
+5. Run the application:
    ```bash
-   cd koreader_store
    python main.py
    ```
 
@@ -133,3 +136,4 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
