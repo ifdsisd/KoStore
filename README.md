@@ -38,11 +38,11 @@ koreader_store/
 
 ## Installation
 
-**Windows**:
-1. Go to the releases tab(https://github.com/ThePixelPro366/KoStore/releases) and download the exe
-2. Run the exe(there might be a application not responding message just wait).
+1. Go to the releases tab
+2. Download the right zip for you system
+3. Extract the zip and run the File
 
-**Everyone else**:
+**If that failed**:
 
 0. Make sure python is installed(https://www.python.org/downloads/)
 1. Clone or download the zip
@@ -148,6 +148,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
 
 
 
