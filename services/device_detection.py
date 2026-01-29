@@ -203,3 +203,62 @@ class DeviceDetection:
             info["patches_exist"] = os.path.exists(patches_dir)
         
         return info
+    
+    def is_mtp_device(self, path: str) -> bool:
+        """
+        Detect if the selected path is an MTP device by checking filesystem access.
+        MTP devices appear in file dialogs but don't provide real filesystem access.
+        
+        Args:
+            path: Path to check
+            
+        Returns:
+            True if MTP device detected, False otherwise
+        """
+        try:
+            path_obj = Path(path)
+            
+            # Check if path exists at all
+            if not path_obj.exists():
+                return True  # Very likely MTP or virtual device
+            
+            # Check if it's a directory
+            if not path_obj.is_dir():
+                return True  # Not a real directory
+            
+            # Try to list directory contents
+            try:
+                list(path_obj.iterdir())
+            except (PermissionError, OSError, NotImplementedError):
+                return True  # Cannot access filesystem - MTP indicator
+            
+            # Check for typical real filesystem patterns
+            path_str = str(path_obj)
+            
+            # Windows-specific checks
+            if platform.system() == "Windows":
+                # Real drives have drive letters like C:\, D:\, etc.
+                # MTP devices often have paths without drive letters or unusual formats
+                if not (len(path_str) >= 2 and path_str[1] == ':'):
+                    return True
+                
+                # Check if we can access file attributes
+                try:
+                    os.stat(path)
+                except (PermissionError, OSError, NotImplementedError):
+                    return True
+            
+            # Try to create a test file (this will fail on MTP)
+            test_file = path_obj / ".koreader_mtp_test"
+            try:
+                test_file.touch()
+                test_file.unlink()  # Clean up
+                return False  # Can write to filesystem - not MTP
+            except (PermissionError, OSError, NotImplementedError):
+                return True  # Cannot write - likely MTP
+                
+        except Exception as e:
+            logger.debug(f"Error checking MTP device for path {path}: {e}")
+            return True  # Assume MTP on errors
+        
+        return False
