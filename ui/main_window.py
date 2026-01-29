@@ -493,16 +493,35 @@ class KOReaderStore(QMainWindow):
             self.update_device_status(False)
     
     def select_koreader_path(self):
-        """Manually select KOReader path - skips all checks"""
+        """Manually select KOReader path - includes MTP detection"""
         path = QFileDialog.getExistingDirectory(self, "Select KOReader Device")
         if path:
             selected_path = Path(path)
-            # Skip all validation checks for manual selection
+            
+            # Check if this is an MTP device
+            if self.device_detection.is_mtp_device(str(selected_path)):
+                self.show_mtp_warning()
+                return
+            
+            # Skip all validation checks for manual selection (non-MTP)
             self.koreader_path = selected_path
             self.update_device_status(True)
             self.plugin_installer = PluginInstaller(str(self.koreader_path))
             self.load_installed_plugins()
             logger.info(f"Manually selected KOReader device: {self.koreader_path}")
+    
+    def show_mtp_warning(self):
+        """Show user-friendly warning for MTP devices"""
+        msg_box = QMessageBox(self)
+        msg_box.setIcon(QMessageBox.Icon.Warning)
+        msg_box.setWindowTitle("Unsupported Device Detected")
+        msg_box.setText("The selected device appears to be connected using MTP (Media Transfer Protocol).")
+        msg_box.setInformativeText(
+            "MTP devices do not expose a real filesystem path, which means KoStore cannot access them directly.\n\n"
+            "Please use a local folder, SD card, or KOReader's WiFi transfer instead."
+        )
+        msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
+        msg_box.exec()
     
     def prompt_device_selection(self, device_paths):
         """Prompt user to select from multiple KOReader devices"""
